@@ -6,11 +6,14 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+    boolean mPlaying = false;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -29,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
         initPlayer();
 
 
+    }
+
+    public void onBtnPlayClicked(View button) {  // Play/pause.
+        mPlaying = !mPlaying;
+        onPlayPause(mPlaying);
+        Button b = (Button) findViewById(R.id.btn_play);
+        if (b != null) b.setText(mPlaying ? "Pause" : "Play");
     }
 
     private void initPlayer() {
@@ -53,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         }
         //endregion
 
-        audioStart(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString),getPackageResourcePath(),fileOffset,fileLength);
+        audioInitialize(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString),getPackageResourcePath(),fileOffset,fileLength);
+
     }
 
     /**
@@ -61,5 +72,6 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
-    public native void audioStart(int samplerate, int buffersize, String apkPath, int fileOffset, int fileLength);
+    public native void audioInitialize(int samplerate, int buffersize, String apkPath, int fileOffset, int fileLength);
+    private native void onPlayPause(boolean play);
 }
