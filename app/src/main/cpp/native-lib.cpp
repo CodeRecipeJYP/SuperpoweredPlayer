@@ -19,6 +19,19 @@ Java_com_asuscomm_yangyinetwork_player_MainActivity_stringFromJNI(
     return env->NewStringUTF(hello.c_str());
 }
 
+static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
+    return ((AudioPlayerImpl *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
+}
+
+static void playerEventCallback(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
+    if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
+        SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
+        playerA->setBpm(126.0f);
+        playerA->setFirstBeatMs(353);
+        playerA->setPosition(playerA->firstBeatMs, false, false);
+    };
+}
+
 
 extern "C"
 JNIEXPORT void
