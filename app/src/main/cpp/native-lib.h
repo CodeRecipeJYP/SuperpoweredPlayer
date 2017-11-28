@@ -28,8 +28,7 @@ private:
     SuperpoweredAndroidAudioIO *audioSystem;
     SuperpoweredAdvancedAudioPlayer *player;
     float *stereoBuffer;
-    unsigned char activeFx;
-    float crossValue, volA, volB;
+    float vol;
 };
 
 #endif //PLAYER_NATIVE_LIB_H

@@ -3,6 +3,7 @@
 #include <string>
 #include <stdlib.h>
 #include <SuperpoweredAdvancedAudioPlayer.h>
+#include <SuperpoweredSimple.h>
 #include <SLES/OpenSLES_AndroidConfiguration.h>
 #include <SLES/OpenSLES.h>
 
@@ -32,6 +33,12 @@ static void playerEventCallback(void *clientData, SuperpoweredAdvancedAudioPlaye
     };
 }
 
+bool AudioPlayerImpl::process(short int *output, unsigned int numberOfSamples) {
+    bool silence = !player->process(stereoBuffer, false, numberOfSamples, vol);
+
+    if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
+    return !silence;
+}
 
 extern "C"
 JNIEXPORT void
