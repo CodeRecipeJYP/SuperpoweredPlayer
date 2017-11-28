@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def superpowered_sdk_path = "/Users/jaeyoung/workspace/mtcom/android/cheatsheats/fromothers/Low-Latency-Android-Audio-iOS-Audio-Engine/Superpowered"
+
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -11,6 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
+                arguments '-DANDROID_PLATFORM=android-16', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=gnustl_static', "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}"
                 cppFlags ""
             }
         }

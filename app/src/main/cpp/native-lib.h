@@ -5,6 +5,11 @@
 #ifndef PLAYER_NATIVE_LIB_H
 #define PLAYER_NATIVE_LIB_H
 
+#include <AndroidIO/SuperpoweredAndroidAudioIO.h>
+#include <SuperpoweredAdvancedAudioPlayer.h>
+
+
+
 class AudioPlayerImpl {
 public:
 

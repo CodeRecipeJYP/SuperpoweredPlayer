@@ -2,6 +2,9 @@
 #include <jni.h>
 #include <string>
 #include <stdlib.h>
+#include <SuperpoweredAdvancedAudioPlayer.h>
+#include <SLES/OpenSLES_AndroidConfiguration.h>
+#include <SLES/OpenSLES.h>
 
 
 static AudioPlayerImpl *example = NULL;
