@@ -5,6 +5,7 @@
 #include <SuperpoweredAdvancedAudioPlayer.h>
 #include <SuperpoweredSimple.h>
 #include <SuperpoweredCPU.h>
+#include <android/log.h>
 #include <SLES/OpenSLES_AndroidConfiguration.h>
 #include <SLES/OpenSLES.h>
 
@@ -22,10 +23,12 @@ Java_com_asuscomm_yangyinetwork_player_MainActivity_stringFromJNI(
 }
 
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "audioProcessing");
     return ((AudioPlayerImpl *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
 }
 
 static void playerEventCallback(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "playerEventCallback");
     if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
         SuperpoweredAdvancedAudioPlayer *player = *((SuperpoweredAdvancedAudioPlayer **)clientData);
         player->setBpm(126.0f);
@@ -35,6 +38,7 @@ static void playerEventCallback(void *clientData, SuperpoweredAdvancedAudioPlaye
 }
 
 bool AudioPlayerImpl::process(short int *output, unsigned int numberOfSamples) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::process");
     bool silence = !player->process(stereoBuffer, false, numberOfSamples, vol);
 
     if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
@@ -44,12 +48,14 @@ bool AudioPlayerImpl::process(short int *output, unsigned int numberOfSamples) {
 extern "C"
 JNIEXPORT void
 Java_com_asuscomm_yangyinetwork_player_MainActivity_audioInitialize(JNIEnv *javaEnvironment, jobject __unused obj, jint samplerate, jint buffersize, jstring apkPath, jint fileOffset, jint fileLength) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "Java_com_asuscomm_yangyinetwork_player_MainActivity_audioInitialize");
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     example = new AudioPlayerImpl((unsigned int)samplerate, (unsigned int)buffersize, path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
 }
 
 void AudioPlayerImpl::onPlayPause(bool play) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::onPlayPause");
 
     if (!play) {
         player->pause();
@@ -60,6 +66,7 @@ void AudioPlayerImpl::onPlayPause(bool play) {
 }
 
 AudioPlayerImpl::AudioPlayerImpl(unsigned int samplerate, unsigned int buffersize, const char *path, int fileOffset, int fileLength) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::AudioPlayerImpl");
     stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
 
     player = new SuperpoweredAdvancedAudioPlayer(&player , playerEventCallback, samplerate, 0);
@@ -73,6 +80,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_asuscomm_yangyinetwork_player_MainActivity_onPlayPause(JNIEnv *env, jobject instance,
                                                                 jboolean play) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "Java_com_asuscomm_yangyinetwork_player_MainActivity_onPlayPause");
     example->onPlayPause(play);
 
 

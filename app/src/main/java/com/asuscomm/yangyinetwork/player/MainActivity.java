@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     boolean mPlaying = false;
 
     // Used to load the 'native-lib' library on application startup.
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         // Files under res/raw are not zipped, just copied into the APK. Get the offset and length to know where our files are located.
         AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.lycka);
         int fileOffset = (int)fd0.getStartOffset(), fileLength = (int)fd0.getLength();
+        Log.d(TAG, "initPlayer: fileOffset=" + fileOffset);
         try {
             fd0.getParcelFileDescriptor().close();
         } catch (IOException e) {
