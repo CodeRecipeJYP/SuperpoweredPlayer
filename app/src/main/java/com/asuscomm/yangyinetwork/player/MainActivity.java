@@ -1,9 +1,12 @@
 package com.asuscomm.yangyinetwork.player;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +18,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final int PERMISSION_REQUEST_CODE = 123;
     boolean mPlaying = false;
 
     // Used to load the 'native-lib' library on application startup.
@@ -31,9 +35,18 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
 
+        requestPermission();
+
         initPlayer();
 
 
+    }
+
+    private void requestPermission() {
+        Log.d(TAG, "requestPermission: ");
+        ActivityCompat.requestPermissions(this,
+                new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE },
+                PERMISSION_REQUEST_CODE);
     }
 
     public void onBtnPlayClicked(View button) {  // Play/pause.
@@ -66,8 +79,11 @@ public class MainActivity extends AppCompatActivity {
         }
         //endregion
 
-        audioInitialize(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString),getPackageResourcePath(),fileOffset,fileLength);
-
+//        audioInitialize(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString),getPackageResourcePath(),fileOffset,fileLength);
+        // issue11
+//        audioInitializeWithPath(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString), "/storage/emulated/0/Download/20170825_test1.WAV");
+        audioInitializeWithPath(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString), "/storage/emulated/0/Download/20170928134024.wav");
+//        audioInitializeWithPath(Integer.parseInt(samplerateString),Integer.parseInt(buffersizeString), "/storage/emulated/0/Download/lycka.mp3");
     }
 
     /**
@@ -76,5 +92,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public native String stringFromJNI();
     public native void audioInitialize(int samplerate, int buffersize, String apkPath, int fileOffset, int fileLength);
+    public native void audioInitializeWithPath(int samplerate, int buffersize, String filePath);
     private native void onPlayPause(boolean play);
 }

@@ -14,6 +14,9 @@ class AudioPlayerImpl {
 public:
 
     AudioPlayerImpl(unsigned int samplerate, unsigned int buffersize, const char *path, int fileOffset, int fileLength);
+
+    AudioPlayerImpl(unsigned int samplerate, unsigned int buffersize, const char *path);
+
     ~AudioPlayerImpl();
 
     bool process(short int *output, unsigned int numberOfSamples);
