@@ -23,7 +23,7 @@ Java_com_asuscomm_yangyinetwork_player_MainActivity_stringFromJNI(
 }
 
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
-    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "audioProcessing");
+//    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "audioProcessing");
     return ((AudioPlayerImpl *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
 }
 
@@ -38,10 +38,20 @@ static void playerEventCallback(void *clientData, SuperpoweredAdvancedAudioPlaye
 }
 
 bool AudioPlayerImpl::process(short int *output, unsigned int numberOfSamples) {
-    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::process");
-    bool silence = !player->process(stereoBuffer, false, numberOfSamples, vol);
+//    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::process");
 
+    // Issue02, volume도 0이었음
+    vol = 1.0f;
+
+    // Issue01, silence 를 false로 해서 문제생긴거였음
+    // this->player->process(stereoBuffer, false, numberOfSamples, vol);
+    // -> this->player->process(stereoBuffer, tmp_silence, numberOfSamples, vol);
+    bool tmp_silence = true;
+    bool silence = !this->player->process(stereoBuffer, tmp_silence, numberOfSamples, vol);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredExample.cpp", "SuperpoweredExample::process Silence=%d, Vol=%lf", false, vol);
     if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredExample.cpp", "SuperpoweredExample::process Return !Silence=%d", !silence);
     return !silence;
 }
 
@@ -58,22 +68,23 @@ void AudioPlayerImpl::onPlayPause(bool play) {
     __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::onPlayPause");
 
     if (!play) {
-        player->pause();
+        this->player->pause();
     } else {
-        player->play(false);
+        this->player->play(false);
     };
     SuperpoweredCPU::setSustainedPerformanceMode(play); // <-- Important to prevent audio dropouts.
 }
 
 AudioPlayerImpl::AudioPlayerImpl(unsigned int samplerate, unsigned int buffersize, const char *path, int fileOffset, int fileLength) {
     __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::AudioPlayerImpl");
-    stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
+    this->stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
 
-    player = new SuperpoweredAdvancedAudioPlayer(&player , playerEventCallback, samplerate, 0);
+    this->player = new SuperpoweredAdvancedAudioPlayer(&(this->player), playerEventCallback, samplerate, 0);
 
-    player->open(path, fileOffset, fileLength);
+    this->player->open(path, fileOffset, fileLength);
+    this->player->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_TempoAndBeat;
 
-    audioSystem = new SuperpoweredAndroidAudioIO(samplerate, buffersize, false, true, audioProcessing, this, -1, SL_ANDROID_STREAM_MEDIA, buffersize * 2);
+    this->audioSystem = new SuperpoweredAndroidAudioIO(samplerate, buffersize, false, true, audioProcessing, this, -1, SL_ANDROID_STREAM_MEDIA, buffersize * 2);
 }
 
 extern "C"
