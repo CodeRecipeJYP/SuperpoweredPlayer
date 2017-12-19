@@ -7,7 +7,7 @@
 
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
 #include <SuperpoweredAdvancedAudioPlayer.h>
-
+#include <SuperpoweredFilter.h>
 
 
 class AudioPlayerImpl {
@@ -26,6 +26,7 @@ public:
     void onFxOff();
     void onFxValue(int value);
     void onEQBand(unsigned int index, int gain);
+    SuperpoweredFilter *filter;
 
 private:
     SuperpoweredAndroidAudioIO *audioSystem;

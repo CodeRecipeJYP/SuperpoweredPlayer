@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
+    private boolean mFilterOnoff = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
         onPlayPause(mPlaying);
         Button b = (Button) findViewById(R.id.btn_play);
         if (b != null) b.setText(mPlaying ? "Pause" : "Play");
+    }
+
+    public void onBtnFilterClicked(View button) {  // Play/pause.
+        mFilterOnoff = !mFilterOnoff;
+        onFilterOnoff(mFilterOnoff);
+        Button b = (Button) findViewById(R.id.btn_filter);
+        if (b != null) b.setText(mFilterOnoff ? "Filter On" : "Filter Off");
     }
 
     private void initPlayer() {
@@ -94,4 +103,5 @@ public class MainActivity extends AppCompatActivity {
     public native void audioInitialize(int samplerate, int buffersize, String apkPath, int fileOffset, int fileLength);
     public native void audioInitializeWithPath(int samplerate, int buffersize, String filePath);
     private native void onPlayPause(boolean play);
+    private native void onFilterOnoff(boolean onoff);
 }
