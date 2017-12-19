@@ -10,8 +10,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -41,7 +44,26 @@ public class MainActivity extends AppCompatActivity {
 
         initPlayer();
 
+        SeekBar seekBar = findViewById(R.id.seekbar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    float progressFloat =(float) progress / (float) seekBar.getMax();
+                    onSeek(progressFloat);
+                }
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void requestPermission() {
@@ -104,4 +126,5 @@ public class MainActivity extends AppCompatActivity {
     public native void audioInitializeWithPath(int samplerate, int buffersize, String filePath);
     private native void onPlayPause(boolean play);
     private native void onFilterOnoff(boolean onoff);
+    private native void onSeek(float percent);
 }

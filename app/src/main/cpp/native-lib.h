@@ -27,6 +27,7 @@ public:
     void onFxValue(int value);
     void onEQBand(unsigned int index, int gain);
     SuperpoweredFilter *filter;
+    void onSeek(float percent);
 
 private:
     SuperpoweredAndroidAudioIO *audioSystem;

@@ -105,6 +105,11 @@ void AudioPlayerImpl::onPlayPause(bool play) {
     SuperpoweredCPU::setSustainedPerformanceMode(play); // <-- Important to prevent audio dropouts.
 }
 
+void AudioPlayerImpl::onSeek(float percent) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::onSeek percent=%f", percent);
+    player->seek(percent);
+}
+
 AudioPlayerImpl::AudioPlayerImpl(unsigned int samplerate, unsigned int buffersize, const char *path, int fileOffset, int fileLength) {
     __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "AudioPlayerImpl::AudioPlayerImpl");
     stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
@@ -153,8 +158,16 @@ Java_com_asuscomm_yangyinetwork_player_MainActivity_onPlayPause(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT void JNICALL
+Java_com_asuscomm_yangyinetwork_player_MainActivity_onSeek(JNIEnv *env, jobject instance,
+                                                                jfloat percent) {
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "Java_com_asuscomm_yangyinetwork_player_MainActivity_onSeek");
+    example->onSeek(percent);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
 Java_com_asuscomm_yangyinetwork_player_MainActivity_onFilterOnoff(JNIEnv *env, jobject instance,
                                                                 jboolean onoff) {
-    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "Java_com_asuscomm_yangyinetwork_player_MainActivity_onPlayPause");
+    __android_log_print(ANDROID_LOG_DEBUG, "native-lib.cpp", "Java_com_asuscomm_yangyinetwork_player_MainActivity_onFilterOnoff");
     example->filter->enable(onoff);
 }

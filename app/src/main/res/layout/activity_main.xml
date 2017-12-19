@@ -38,4 +38,13 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_play"
         />
 
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_filter"
+        />
+
 </android.support.constraint.ConstraintLayout>
