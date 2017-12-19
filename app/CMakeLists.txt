@@ -18,6 +18,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp
+             src/main/cpp/SuperpoweredPlayer.cpp
              ${PATH_TO_SUPERPOWERED}/AndroidIO/SuperpoweredAndroidAudioIO.cpp
              )
 
